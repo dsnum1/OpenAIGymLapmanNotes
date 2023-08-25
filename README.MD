@@ -28,7 +28,26 @@ The space class is abstract and is reimplemented in the child classes. The follo
 1. Discrete(n): represents a set of items numbered from 0 to n-1. Discrete(3) = [left, right, stay]
 2. Box class: n-dimensional tensor of rational numbers with intervals [low, high]. Eg. Steeering Wheel=>Discrete(low=0.0, high=1.0, shape=(1,) dtype=np.float32). Shape argument describes the shape of the tensor. Eg. In atari game, the shape=(210,160,3) describing the image input
 3. Space class is a tuple class which allows several space class instances to be combined together. This is in cases where more than two actions need to be executed
-4
 
+
+*The environment*
+following members
+1. action_space
+2. observation_space
+3. reset(): reset into initial state and return initial observation. After every episode, agenet needs to reset
+4. step(): does the following
+    - execute given action in the environment
+    - getting new observation after this action
+    - getting reward agent gained
+    - getting indication of whether episode is over 
+The above arguments are returned in a python tuple
+(observation, reward, done, extra_info)
+observation: numpy vector with observation data
+reward: float value
+done: boolean indicator. True or False
+extra_info: could be anything. 
+
+
+There are extra functions like render() also
 
 
