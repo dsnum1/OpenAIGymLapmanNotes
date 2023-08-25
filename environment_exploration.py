@@ -1,7 +1,7 @@
 import gymnasium as gym
 
-
-env    = gym.make('MiniGrid-Empty-5x5-v0')   
+env = gym.make('MiniGrid-Empty-5x5-v0')
+env = gym.make('ALE/Adventure-v5', render_mode="rgb_array")   
 env.reset()
 
 print("action_space", env.action_space)

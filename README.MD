@@ -51,3 +51,16 @@ extra_info: could be anything.
 There are extra functions like render() also
 
 
+
+*Creation of the environment*
+There are many environments available. Named as "environment_name-vN"
+Types of environments:
+1. Classic Control Problems: basic problems, with low-dimension observation and action space, quick checks when implementing algorithms
+2. Atari 2600
+3. Algorithmic: small computation tasks, such as adding numbers
+4. Board Games
+5. Box2D: 2d physics walking, car control
+6. Parameter unings: Optimize nn parameters
+7. Toy Text: Grid world text environments
+8. PyGame: Using pygame engine
+9. Doom
