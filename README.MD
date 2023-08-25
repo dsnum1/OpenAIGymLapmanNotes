@@ -64,3 +64,23 @@ Types of environments:
 7. Toy Text: Grid world text environments
 8. PyGame: Using pygame engine
 9. Doom
+
+
+
+Reward Boundary
+This is the standard set to "solve" the environment. It's the average reward expected to be earned in 100 episodes to claim that your algorithm is worth it. 
+
+
+Wrappers
+Accumulate observations in a buffer, and provide last N observations to the agent. Pre-process an image's pixels. 
+To do this, you need to redefine the methods you want to extend such as step and reset 
+
+Subclasses of Wrappers:
+1. ObservationWrapper: redefine observation
+2. RewardWrapper: redefine reeward value
+3. ActionWrapper: redefine action method
+
+
+
+Monitor
+Class that writes agent's performance ina  file with an option video recording of your agent in action. 
