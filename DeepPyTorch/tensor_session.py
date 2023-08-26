@@ -19,3 +19,13 @@ print(torch.tensor(n, dtype=torch.float64))
 print(torch.tensor(n, dtype=torch.float32))
 #float16
 print(torch.tensor(n, dtype=torch.float16))
+
+
+
+# Scalar vectors. Demonstrationg `.item()`
+
+a = torch.tensor([1,2,3])
+print(a)
+s = a.sum() # adds all the tensors values
+print(s)
+print(s.item())

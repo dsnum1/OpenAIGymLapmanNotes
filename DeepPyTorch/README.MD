@@ -29,3 +29,12 @@ Reinitializes all elements inside tensor 'a' to 0.
 For the kaggle challenge. Try to use as many inplace operators to decrease run time.
 
 Usually in Deep Learning, double precision is not requireed and it adds extra memory and performance overheaad. So the common practicee is to use 32 bit float type or 16 bit float type. It's not needed to use the 64 bit float types.
+
+
+*Scalar Tensors*
+Zero dimensional tensors
+Earlier one need to index the tensor to access the value. However, now you can access the value using `.item()`
+
+
+`.sum()` will add all the elements in tensor
+
