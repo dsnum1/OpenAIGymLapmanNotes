@@ -38,3 +38,18 @@ Earlier one need to index the tensor to access the value. However, now you can a
 
 `.sum()` will add all the elements in tensor
 
+
+
+*GPU Tensors*
+
+PyTorch supports CUDA GPus. All operations have two versions-- GPU/CPU. They are automattically decided based on type of tensors.
+
+CPU tensors reside in `torch` package
+GPU tensors reside in `torch.cuda` package
+
+`to()` method is used to convert  from CPU to GPU and vice versa
+
+
+
+
+

@@ -29,3 +29,11 @@ print(a)
 s = a.sum() # adds all the tensors values
 print(s)
 print(s.item())
+
+
+#GPU and CPU
+
+a = torch.FloatTensor([2,3])
+print(a)
+ca = a.cuda()
+print(ca)
