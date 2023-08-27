@@ -21,4 +21,28 @@ So our neural network doesn't return a single action, but rather the probability
 
 Let's say that the output of our neural network is 40% probability for action left, and 60% probability of action right. In Q Learning or DQN, this will mean that action right is executed 100% time. But for a policy gradients agent, it means that it's 60% likely for action left to be executed while 60% probabilty of action right to be executed. 
 
+*Policy Gradients*
 
+How to change the network's parameters?
+We will look at REINFORCE.
+
+`PolicyGradient(PG) = -Q(s,a)log(pi(a|s))`
+
+PG defines the direction in which we want to change our network's parameters to improve accumulated total reward. 
+
+Scale of Gradient proportional to Q(s,a)
+Gradient = log(probability of action taken).
+
+We want to increase the probability of good actions. 
+We want to decrease the probability of bad actions. 
+
+The loss L is the same as the gradient of expected cumulative reward. 
+Q(s,a) can be the same as G_t. 
+log(pi(a|s)) is written as Grad(wrt. to Theta)(log(pi(a|s)))
+
+We need to maximize the policy gradient. 
+
+
+
+
+*REINFORCE method*
