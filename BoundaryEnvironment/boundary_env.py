@@ -4,7 +4,7 @@ from minigrid.minigrid_env import MiniGridEnv
 from minigrid.manual_control import ManualControl
 from minigrid.core.constants import COLOR_NAMES
 from minigrid.core.grid import Grid
-import random
+import numpy as np
 
 class SimpleEnv(MiniGridEnv):
     def __init__(self,
@@ -50,10 +50,45 @@ class SimpleEnv(MiniGridEnv):
         for i in range(0, self.height):
             if(i != self.height//2):
                 self.grid.set(self.width//2, i, Wall())
+    
+    def get_state(self, agent_x, agent_y):
+        # need to do one-hot-encoding of the states
+        # how to do that?
+        # is wall at some location?
+        cell_type_to_index = {
+            'agent':0,
+            'wall': 1,
+            # 'door': 1,
+            # 'key': 2,
+            # 'ball': 3,
+            'goal': 2,
+            # 'lava': 5,
+            # 'empty': 3,  # For empty cells
+        }
+
+
+
+        one_hot_state = np.zeros((self.height, self.width, len(cell_type_to_index)), dtype=np.float32)
+
+        for i in range(self.width):
+            for j in range(self.height):
+                cell = self.grid.get(i,j)
+                if(cell!=None):
+                    cell_type = cell.type
+                    # index = cell_type_to_index.get(cell_type, cell_type_to_index['empty'])
+                    index = cell_type_to_index.get(cell_type)
+                    one_hot_state[i, j, index] = 1.0
+                    continue
+                if(agent_x == i and agent_y == j):
+                    cell_type = 'agent'
+                    index=cell_type_to_index['agent']
+                    one_hot_state[i, j, index] = 1.0
+
+            
         
+        return one_hot_state
 
 
-        pass
 def main():
     env = SimpleEnv(render_mode="human", width=9, height=9)
 
