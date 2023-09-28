@@ -135,10 +135,19 @@ def train(model_path):
     episode_rewards = []
     batch_count = 0
 
+
+
+
     for step_idx in range(2000000):
         state = env.reset()
         state = ohc_state(env)
 
+
+        unchecked_batch_states = 0
+        unchecked_batch_states = []
+        unchecked_batch_actions = []
+        unchecked_episode_rewards = []
+        unchecked_batch_returns = []
 
         total_reward = 0
         horizon_counter = 0
@@ -155,12 +164,15 @@ def train(model_path):
             next_state = ohc_state(env)
             total_reward+=reward
 
-            batch_states.append(state)
-            batch_actions.append(action)
-            episode_rewards.append(reward)
-
+            unchecked_batch_states.append(state)
+            unchecked_batch_actions.append(action)
+            unchecked_episode_rewards.append(reward)
 
             if done:
+                batch_states+=unchecked_batch_states
+                batch_actions+=unchecked_batch_actions
+                episode_rewards+=unchecked_episode_rewards
+
                 returns_from_episode = calculate_discounted_returns(episode_rewards)
                 total_rewards.append(returns_from_episode[0])
                 batch_returns.extend(returns_from_episode)
@@ -194,11 +206,19 @@ def train(model_path):
                     )
 
 
-
+            
             if done:
                 break
 
             state = next_state
+
+        if(not done):
+            episode_rewards.clear()
+
+
+        unchecked_batch_states.clear()
+        unchecked_batch_actions.clear()
+        unchecked_episode_rewards.clear()
 
         # handle new rewards
         new_rewards = [total_reward]
