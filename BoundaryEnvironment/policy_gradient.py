@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+
 HORIZON = 50
 from boundary_env import SimpleEnv
 
@@ -37,8 +38,8 @@ def load_model(model, filepath):
 
 
 GAMMA = 0.99
-LEARNING_RATE = 0.01
-EPISODES_TO_TRAIN = 4
+LEARNING_RATE = 0.0001
+EPISODES_TO_TRAIN = 3
 
 
 def ohc_state(env):
@@ -46,7 +47,8 @@ def ohc_state(env):
     agent_x = env.agent_pos[0]
     agent_y = env.agent_pos[1]
     state = env.get_state(agent_x, agent_y)
-    state = state.reshape(-1)
+    # print("(", agent_x, agent_y,")" ,state.index(1))
+    # state = state.reshape(-1)
 
     # print(env.observation_space.spaces['image'])
 
@@ -90,7 +92,7 @@ def calculate_discounted_returns(rewards):
     return list(reversed(discounted_returns))
     
 
-if __name__ == "__main__":
+def train(model_path):
     # env = gym.make("CartPole-v0")
     # env_id = 'MiniGrid-Empty-5x5-v0'
     # env = gym.make(env_id)
@@ -116,6 +118,9 @@ if __name__ == "__main__":
     # # writer = SummaryWriter(comment="-cartpole-reinforce")
     
     net = PolicyGradientNet(len(ohc_state(env)), output_size=3)
+    if model_path!=None:
+        print('model_loaded')
+        net.load_state_dict(torch.load(model_path))
     print(net)
 
     optimizer = optim.Adam(net.parameters(), lr = LEARNING_RATE)
@@ -128,15 +133,18 @@ if __name__ == "__main__":
     batch_episodes = 0
     batch_states, batch_actions, batch_returns = [],[],[]
     episode_rewards = []
+    batch_count = 0
 
-    for step_idx in range(10000):
+    for step_idx in range(2000000):
         state = env.reset()
         state = ohc_state(env)
 
+
         total_reward = 0
-
-        while True:
-
+        horizon_counter = 0
+        while horizon_counter < HORIZON:
+            # Use the policy network to select an action
+            horizon_counter+=1
             state_v = torch.FloatTensor(state)  # convert into Float Tensor
             logits_v = net(state) # pass the state into net
             probs_v = F.softmax(logits_v, dim=0)
@@ -160,6 +168,8 @@ if __name__ == "__main__":
                 batch_episodes+=1
 
                 if batch_episodes>= EPISODES_TO_TRAIN:
+                    batch_count+=1
+                    print('batch_finished', batch_count)
                     optimizer.zero_grad()
                     states_v = torch.FloatTensor(batch_states)
                     batch_actions_t = torch.LongTensor(batch_actions)
@@ -178,6 +188,11 @@ if __name__ == "__main__":
                     batch_states.clear()
                     batch_actions.clear()
                     batch_returns.clear()
+                    save_model(
+                        net,
+                        model_path
+                    )
+
 
 
             if done:
@@ -190,9 +205,12 @@ if __name__ == "__main__":
         done_episodes += 1
         # total_rewards.append(total_reward)
         mean_rewards = float(np.mean(total_rewards[-100:]))
-        print("%d: reward: %6.2f, mean_100: %6.2f, episodes: %d" % (
+        print("%d: reward: %6.5f, mean_100: %6.2f, episodes: %d" % (
             step_idx, total_reward, mean_rewards, done_episodes))
-        writer.add_scalar("discounted_return", total_rewards[-1], step_idx)
+        if(len(total_rewards)>0):
+            writer.add_scalar("discounted_return", total_rewards[-1], step_idx)
+        else:
+            writer.add_scalar("discounted_return", 0, step_idx)
         writer.add_scalar("mean_discounted_return_100", mean_rewards, step_idx)
         # writer.add_scalar("episodes", done_episodes, step_idx)
         if mean_rewards > 195:
@@ -205,7 +223,7 @@ if __name__ == "__main__":
 
     save_model(
             net,
-            'saved_model_to_show'
+            model_path
         )
 
 
@@ -213,17 +231,19 @@ if __name__ == "__main__":
 
 
 def test_agent(model_path):
-    env_id = 'MiniGrid-Empty-5x5-v0'
-    env = gym.make(
-                env_id,
-                tile_size=32,
-                render_mode="human",
-                agent_pov=False,
-                agent_view_size=3,
-                screen_size=640,
-            )
-    obs = env.reset()
+    # env_id = 'MiniGrid-Empty-5x5-v0'
+    # env = gym.make(
+    #             env_id,
+    #             tile_size=32,
+    #             render_mode="human",
+    #             agent_pov=False,
+    #             agent_view_size=3,
+    #             screen_size=640,
+    #         )
 
+
+    env = SimpleEnv(render_mode="human", width=9, height=9)
+    env.reset()
     net = PolicyGradientNet(len(ohc_state(env)), output_size=3)
     print(net)
 
@@ -237,12 +257,10 @@ def test_agent(model_path):
     for _ in range(num_episodes):
         state = ohc_state(env)
         episode_reward = 0.0
-        
-        horizon_counter = 0
+        env.reset()
 
-        while horizon_counter < HORIZON:
+        while True:
             # Use the policy network to select an action
-            horizon_counter+=1
             with torch.no_grad():
                 state_v = torch.FloatTensor(state)
                 action_probs = F.softmax(net(state_v), dim=0)
@@ -265,12 +283,18 @@ def test_agent(model_path):
 
 
 
-
-test_agent()
+train(model_path="b_3_h_50_E_2M_LR_0_0001")
+# test_agent('b_3_h_50_E_2M_LR_0_0001')
 # main()
 
 
 
+# increase the learning rate from -3 to -2
+#checkout hindisght experience replay
+# intialize SEED
+# tc.random(SEED)
+# np.random(SEED)
+# random.seed(SEED)
 
 
 

@@ -37,6 +37,7 @@ class SimpleEnv(MiniGridEnv):
     def _gen_grid(self, width, height):
         self.grid = Grid(self.width, self.height)
         self.grid.wall_rect(0, 0, self.width, self.height)
+        self.agent_start_pos = (1, 1)  # Set the agent's start position
         if self.agent_start_pos is not None:
             self.agent_pos = self.agent_start_pos
             self.agent_dir = self.agent_start_dir
@@ -51,7 +52,7 @@ class SimpleEnv(MiniGridEnv):
             if(i != self.height//2):
                 self.grid.set(self.width//2, i, Wall())
     
-    def get_state(self, agent_x, agent_y):
+    def get_state_deprecate(self, agent_x, agent_y):
         # need to do one-hot-encoding of the states
         # how to do that?
         # is wall at some location?
@@ -87,6 +88,16 @@ class SimpleEnv(MiniGridEnv):
             
         
         return one_hot_state
+
+    def get_state(self, agent_x, agent_y):
+        state =[]
+        for i in range(1, self.height-1):
+            for j in range(1, self.width-1):
+                if(agent_x == j and agent_y ==i):
+                    state.append(1)
+                else:
+                    state.append(0)        
+        return state
 
 
 def main():
