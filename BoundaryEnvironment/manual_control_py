@@ -1,0 +1,12 @@
+from boundary_env import SimpleEnv
+from minigrid.manual_control import ManualControl
+import argparse
+
+def main():
+    env = SimpleEnv(render_mode="human", width=9, height=9)
+
+    # enable manual control for testing
+    manual_control = ManualControl(env, seed=42)
+    manual_control.start()
+
+main()
