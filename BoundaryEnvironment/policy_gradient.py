@@ -120,7 +120,7 @@ def train(model_path):
     net = PolicyGradientNet(len(ohc_state(env)), output_size=3)
     if model_path!=None:
         print('model_loaded')
-        net.load_state_dict(torch.load(model_path))
+        # net.load_state_dict(torch.load(model_path))
     print(net)
 
     optimizer = optim.Adam(net.parameters(), lr = LEARNING_RATE)
@@ -180,6 +180,7 @@ def train(model_path):
                 batch_episodes+=1
 
                 if batch_episodes>= EPISODES_TO_TRAIN:
+                    print('batch_length', len(batch_states))
                     batch_count+=1
                     print('batch_finished', batch_count)
                     optimizer.zero_grad()
@@ -212,8 +213,6 @@ def train(model_path):
 
             state = next_state
 
-        if(not done):
-            episode_rewards.clear()
 
 
         unchecked_batch_states.clear()
@@ -274,39 +273,17 @@ def test_agent(model_path):
     total_reward = 0.0
     num_episodes = 10  # Number of episodes to run for testing
 
-    for _ in range(num_episodes):
-        state = ohc_state(env)
-        episode_reward = 0.0
-        env.reset()
-
-        while True:
-            # Use the policy network to select an action
-            with torch.no_grad():
-                state_v = torch.FloatTensor(state)
-                action_probs = F.softmax(net(state_v), dim=0)
-                action = torch.multinomial(action_probs, num_samples=1).item()
-
-            _, reward, done, _1, _23 = env.step(action)
-            episode_reward += reward
-
-            if done:
-                break
-            next_state = ohc_state(env)
-            state = next_state
-
-        total_reward += episode_reward
-
-    average_reward = total_reward / num_episodes
-    print(f"Average Reward over {num_episodes} episodes: {average_reward:.2f}")
 
 
 
 
 
-train(model_path="b_3_h_50_E_2M_LR_0_0001")
+# train(model_path="b_3_h_50_E_2M_LR_0_0001")
 # test_agent('b_3_h_50_E_2M_LR_0_0001')
 # main()
 
+# train(model_path='trying_something')
+test_agent('trying_something')
 
 
 # increase the learning rate from -3 to -2

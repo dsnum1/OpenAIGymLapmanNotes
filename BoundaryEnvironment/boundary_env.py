@@ -4,6 +4,7 @@ from minigrid.minigrid_env import MiniGridEnv
 from minigrid.manual_control import ManualControl
 from minigrid.core.constants import COLOR_NAMES
 from minigrid.core.grid import Grid
+print(minigrid.)
 import numpy as np
 
 class SimpleEnv(MiniGridEnv):
@@ -108,5 +109,5 @@ def main():
     manual_control.start()
 
     
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
